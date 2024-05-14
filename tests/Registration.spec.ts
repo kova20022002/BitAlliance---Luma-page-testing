@@ -9,7 +9,14 @@ test('Creating New Customer Account', async ({ page }) => {
 
   await page.locator(locators.firstName).fill(TestData.firstName);
   await page.locator(locators.lastName).fill(TestData.lastName);
-  await page.locator(locators.email).fill(TestData.email);
+
+  function generateRandomEmail() {
+    const randomString = Math.random().toString(36).substring(7);
+    return `user${randomString}@gmail.com`;
+  }
+  const email = generateRandomEmail();
+
+  await page.locator(locators.email).fill(email);
   await page.locator(locators.password).fill(TestData.password);
   await page.locator(locators.passwordConfirmation).fill(TestData.passwordConfirmation);
 
