@@ -1,6 +1,9 @@
 export const locators = {
-    search: '//*[@id="APjFqb"]',
-    searchBox: '#search',
-    pageLink: 'a[href="https://bit-alliance.ba/en/"]'
+    firstName: '#firstname',
+    lastName: '#lastname',
+    email: '#email_address',
+    password: '#password',
+    passwordConfirmation: '#password-confirmation',
+    logInButton: '//html/body/div[2]/main/div[3]/div/form/div/div[1]/button'
     
 }
