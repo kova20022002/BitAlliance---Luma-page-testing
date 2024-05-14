@@ -4,6 +4,7 @@ export const locators = {
     email: '#email_address',
     password: '#password',
     passwordConfirmation: '#password-confirmation',
-    logInButton: '//html/body/div[2]/main/div[3]/div/form/div/div[1]/button'
+    logInButton: '//html/body/div[2]/main/div[3]/div/form/div/div[1]/button',
+    messageBox: '.message-error > div:nth-child(1)'
     
 }
