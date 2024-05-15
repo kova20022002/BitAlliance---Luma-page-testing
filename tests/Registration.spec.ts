@@ -1,59 +1,62 @@
 import { test, expect } from '@playwright/test';
-import { locators } from './locators';
 import { TestData } from './TestData';
+import { Registration } from '../page-objects/RegistrationPage/Registration';
+import { registrationPageInterface } from '../interfaces/registration';
 
 test('Creating New Customer Account', async ({ page }) => {
-  await page.goto('https://magento.softwaretestingboard.com/customer/account/create/');
-  await page.waitForLoadState("domcontentloaded");
-  await expect(page).toHaveTitle(/Create New Customer Account/);
+  const registrationPage = new Registration(page);
 
-  await page.locator(locators.firstName).fill(TestData.firstName);
-  await page.locator(locators.lastName).fill(TestData.lastName);
-
-  function generateRandomEmail() {
-    const randomString = Math.random().toString(36).substring(7);
-    return `user${randomString}@gmail.com`;
-  }
-  const email = generateRandomEmail();
-
-  await page.locator(locators.email).fill(email);
-  await page.locator(locators.password).fill(TestData.password);
-  await page.locator(locators.passwordConfirmation).fill(TestData.passwordConfirmation);
-
-
-  await expect(page.locator(locators.logInButton)).toBeVisible();
-  await page.locator(locators.logInButton).click();
-
-  await page.waitForLoadState('domcontentloaded');
-  await expect(page).toHaveURL('https://magento.softwaretestingboard.com/customer/account/');
-  await expect(page).toHaveTitle(/My Account/);
-
+  await registrationPage.goto();
+  await registrationPage.fillRegistration(TestData);
+  await registrationPage.clickCreateButton();
 });
 
-test('Unsupported character in email field', async ({ page }) => {
-  await page.goto('https://magento.softwaretestingboard.com/customer/account/create/');
-  await page.waitForLoadState("domcontentloaded");
-  await expect(page).toHaveTitle(/Create New Customer Account/);
+test('Omiting First name in registration form', async ({ page }) => {
+  const registrationPage = new Registration(page);
 
-  await page.locator(locators.firstName).fill(TestData.firstName);
-  await page.locator(locators.lastName).fill(TestData.lastName);
+  const registrationData: registrationPageInterface = {
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    password: 'password123',
+    passwordConfirmation: 'password123'
+};
+  await registrationPage.goto();
+  await registrationPage.fillRegistration(registrationData);
+  await registrationPage.clickCreateButton();
+  await expect(registrationPage.errorBox).toBeVisible();
 
-  function generateRandomEmail() {
-    const randomString = Math.random().toString(36).substring(7);
-    return `user${randomString}ç@gmail.com`;
-  }
-  const email = generateRandomEmail();
+}); 
 
-  await page.locator(locators.email).fill(email);
-  await page.locator(locators.password).fill(TestData.password);
-  await page.locator(locators.passwordConfirmation).fill(TestData.passwordConfirmation);
+test('Different password written in Confirmation Password Field', async ({ page }) => {
+  const registrationPage = new Registration(page);
 
+  const registrationData: registrationPageInterface = {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doeç@example.com',
+    password: 'password123',
+    passwordConfirmation: 'password1234'
+};
+  await registrationPage.goto();
+  await registrationPage.fillRegistration(registrationData);
+  await registrationPage.clickCreateButton();
+  await expect(registrationPage.passwordConfirmationError).toBeVisible();
 
-  await expect(page.locator(locators.logInButton).first()).toBeVisible();
-  await page.locator(locators.logInButton).click();
+}); 
 
-  await expect(page.locator(locators.messageBox)).toBeVisible();
+test('Using too weak password', async ({ page }) => {
+  const registrationPage = new Registration(page);
 
-  
+  const registrationData: registrationPageInterface = {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doeç@example.com',
+    password: 'john',
+    passwordConfirmation: 'john'
+};
+  await registrationPage.goto();
+  await registrationPage.fillRegistration(registrationData);
+  await registrationPage.clickCreateButton();
+  await expect(registrationPage.passwordError).toBeVisible();
 
 });
