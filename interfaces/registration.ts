@@ -4,4 +4,6 @@ export interface registrationPageInterface{
     email?: string | undefined;
     password?: string | undefined;
     passwordConfirmation?: string | undefined;
+    errorType: string;
+    errorTypeMessage: string;
 }

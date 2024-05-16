@@ -1,5 +1,4 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { locators } from './locators';
 import { registrationPageInterface } from '../../interfaces/registration';
 
 export class Registration {
@@ -10,25 +9,27 @@ export class Registration {
     readonly password: Locator;
     readonly confirmPassword: Locator;
     readonly createButton: Locator;
-    readonly errorBox: Locator;
+    readonly nameErrorBox: Locator;
     readonly passwordConfirmationError: Locator;
     readonly passwordError: Locator;
 
   
     constructor(page: Page) {
       this.page = page;
-      this.firstName = page.locator(locators.firstName);
-      this.lastName = page.locator(locators.lastName);
-      this.email = page.locator(locators.email);
-      this.password = page.locator(locators.password);
-      this.confirmPassword = page.locator(locators.passwordConfirmation);
-      this.createButton = page.locator(locators.createButton);
-      this.errorBox = page.locator(locators.errorBox);
-      this.passwordConfirmationError = page.locator(locators.passwordConfirmationError);
-      this.passwordError = page.locator(locators.passwordError);
+      this.firstName = page.locator('#firstname');
+      this.lastName = page.locator('#lastname');
+      this.email = page.locator('#email_address');
+      this.password = page.locator('#password');
+      this.confirmPassword = page.locator('#password-confirmation');
+      this.createButton = page.locator('//html/body/div[2]/main/div[3]/div/form/div/div[1]/button');
+      this.nameErrorBox = page.locator('#firstname-error');
+      this.passwordConfirmationError = page.locator('#password-confirmation-error');
+      this.passwordError = page.locator('#password-error');
 
 
     }
+
+
   
     async goto() {
       await this.page.goto('https://magento.softwaretestingboard.com/customer/account/create/');
@@ -36,7 +37,6 @@ export class Registration {
   
     async enterFirstName(firstName : string | undefined) {
         typeof firstName === 'string' && await this.firstName.fill(firstName);
-        /* typeof firstName === 'string' ? await this.firstName.fill(firstName) : undefined;  */   
     }
   
     async enterLastName(lastName : string | undefined) {
@@ -59,12 +59,20 @@ export class Registration {
         await this.createButton.click();
       }
 
+      async getErrorMessage(errorType: string, errorTypeMessage: string){
+       
+        await expect(this.page.locator('#'+ errorType)).toContainText(errorTypeMessage);
+        console.log(errorType, errorTypeMessage)
+        
+      }
+
       async fillRegistration(registrationData: registrationPageInterface){
         await this.enterFirstName(registrationData.firstName);
         await this.enterLastName(registrationData.lastName);
         await this.enterEmail(registrationData.email);
         await this.enterPassword(registrationData.password);
         await this.enterPasswordConfirmation(registrationData.passwordConfirmation);
+        
 
       }
   }
