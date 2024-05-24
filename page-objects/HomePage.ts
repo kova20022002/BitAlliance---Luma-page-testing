@@ -27,6 +27,8 @@ export class HomePage {
     readonly cartButton: Locator;
     readonly changeQuantity: Locator;
     readonly updateQuantityButton: Locator;
+    readonly viewAndEditCart: Locator;
+    readonly proceedToCheckoutButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -50,8 +52,10 @@ export class HomePage {
         this.addedSuccessfullyBox = page.locator('//html/body/div[2]/main/div[2]/div[2]/div/div');
         this.itemImage = page.locator('//html/body/div[2]/main/div[3]/div/div[2]/div[3]/div/div/ol/li[5]/div/a/span/span/img');
         this.cartButton = page.locator('//html/body/div[2]/header/div[2]/div[1]/a');
-        this.changeQuantity = page.locator('//*[@id="cart-item-80840-qty"]');
-        this.updateQuantityButton = page.locator('//*[@id="update-cart-item-80840"]');
+        this.changeQuantity = page.locator('//*[@id="cart-80814-qty"]');
+        this.updateQuantityButton = page.locator('//html/body/div[2]/main/div[3]/div/div[2]/form/div[2]/button[2]');
+        this.viewAndEditCart = page.locator('//html/body/div[2]/header/div[2]/div[1]/div/div/div/div[2]/div[5]/div/a');
+        this.proceedToCheckoutButton = page.locator('//html/body/div[2]/main/div[3]/div/div[2]/div[1]/ul/li[1]/button');
   
       }
 
@@ -121,12 +125,20 @@ export class HomePage {
         await this.cartButton.click();
     }
 
+    async clickViewAndEditCart(){
+        await this.viewAndEditCart.click();
+    }
+
     async changeQuant(quantity: string){
         typeof quantity === 'number' && await this.changeQuantity.fill(quantity);
     }
 
     async updateQuantity(){
         await this.updateQuantityButton.click();
+    }
+
+    async clickProceedToCheckout(){
+        await this.proceedToCheckoutButton.click();
     }
 
     async fillUpdateInfo(updateInfo: updateDataInterface){
