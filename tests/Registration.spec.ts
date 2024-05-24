@@ -1,20 +1,27 @@
 import { test, expect } from '@playwright/test';
-import { TestData } from './TestData';
-import { Registration } from '../page-objects/RegistrationPage/Registration';
+import { Registration } from '../page-objects/Registration';
 import { registrationPageInterface } from '../interfaces/registration';
 import { parse } from 'csv-parse/sync';
 import fs from 'fs';
-import path from 'path'
+import path from 'path';
 
 
-const testData = parse(fs.readFileSync(path.join(__dirname, 'data.csv')),{
+const filePath = path.join(__dirname, '../data/data.csv');
+const fileContent = fs.readFileSync(filePath, 'utf8');
+
+const testData = parse(fileContent, {
   columns: true,
-  skip_empty_lines: true
+  skip_empty_lines: true,
+  trim: true,
+  quote: '"',
+  relax_quotes: true,
 });
 
 
+test.use({ storageState: { cookies: [], origins: [] } });
+
 for (const data of testData) {
-test(`Registration Test - ${data.errorType}`, async ({ page }) => {
+test(`Registration Test - ${data.testNumber}`, async ({ page }) => {
 const registrationPage = new Registration(page);
 
 const registrationData: registrationPageInterface = {
@@ -29,52 +36,14 @@ const registrationData: registrationPageInterface = {
 };
 
 await registrationPage.goto();
+await expect(registrationPage.form).toBeVisible();
+await expect(registrationPage.firstName).toBeVisible();
+await expect(registrationPage.lastName).toBeVisible();
+await expect(registrationPage.email).toBeVisible();
+await expect(registrationPage.password).toBeVisible();
+await expect(registrationPage.confirmPassword).toBeVisible();
 await registrationPage.fillRegistration(registrationData);
 await registrationPage.clickCreateButton();
-await registrationPage.getErrorMessage(registrationData.errorType, registrationData.errorTypeMessage);
-
+await registrationPage.getError(registrationData.errorType, registrationData.errorTypeMessage);
 }); 
 }
-
-/* test('Creating New Customer Account', async ({ page }) => {
-  const registrationPage = new Registration(page);
-
-  await registrationPage.goto();
-  await registrationPage.fillRegistration(TestData);
-  await registrationPage.clickCreateButton();
-});
-
-test('Omiting First name in registration form', async ({ page }) => {
-  const registrationPage = new Registration(page);
-
-  const registrationData: registrationPageInterface = {
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    password: 'password123',
-    passwordConfirmation: 'password123'
-};
-  await registrationPage.goto();
-  await registrationPage.fillRegistration(registrationData);
-  await registrationPage.clickCreateButton();
-  await expect(registrationPage.errorBox).toBeVisible();
-
-});  */
-
-
-/* test('Using too weak password', async ({ page }) => {
-  const registrationPage = new Registration(page);
-
-  const registrationData: registrationPageInterface = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doeç@example.com',
-    password: 'john',
-    passwordConfirmation: 'john'
-};
-  await registrationPage.goto();
-  await registrationPage.fillRegistration(registrationData);
-  await registrationPage.clickCreateButton();
-  await expect(registrationPage.passwordError).toBeVisible();
-
-});
- */

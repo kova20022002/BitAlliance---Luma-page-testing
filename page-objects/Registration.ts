@@ -1,8 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { registrationPageInterface } from '../../interfaces/registration';
+import { registrationPageInterface } from '../interfaces/registration';
 
 export class Registration {
     readonly page: Page;
+    readonly form: Locator;
     readonly firstName: Locator;
     readonly lastName: Locator;
     readonly email: Locator;
@@ -12,19 +13,22 @@ export class Registration {
     readonly nameErrorBox: Locator;
     readonly passwordConfirmationError: Locator;
     readonly passwordError: Locator;
+    readonly usedEmail: Locator;
 
   
     constructor(page: Page) {
       this.page = page;
+      this.form = page.locator('#form-validate');
       this.firstName = page.locator('#firstname');
       this.lastName = page.locator('#lastname');
       this.email = page.locator('#email_address');
       this.password = page.locator('#password');
       this.confirmPassword = page.locator('#password-confirmation');
-      this.createButton = page.locator('//html/body/div[2]/main/div[3]/div/form/div/div[1]/button');
+      this.createButton = page.locator('.submit');
       this.nameErrorBox = page.locator('#firstname-error');
       this.passwordConfirmationError = page.locator('#password-confirmation-error');
       this.passwordError = page.locator('#password-error');
+      this.usedEmail = page.locator('//html/body/div[2]/main/div[2]/div[2]/div/div/div');
 
 
     }
@@ -59,11 +63,8 @@ export class Registration {
         await this.createButton.click();
       }
 
-      async getErrorMessage(errorType: string, errorTypeMessage: string){
-       
-        await expect(this.page.locator('#'+ errorType)).toContainText(errorTypeMessage);
-        console.log(errorType, errorTypeMessage)
-        
+      async getError(errorType: string, errorTypeMessage: string){
+        await expect(this.page.locator('#'+ errorType)).toContainText(errorTypeMessage); 
       }
 
       async fillRegistration(registrationData: registrationPageInterface){

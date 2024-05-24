@@ -1,0 +1,6 @@
+"testNumber","email","password","errorType","errorTypeMessage"
+"1","","Emir1234!","email-error","This is a required field."
+"2","emir@gmail.com","","pass-error","This is a required field."
+"3","emir@gmail.com","emir1234",".message-error","The account sign-in was incorrect or your account is disabled temporarily. Please wait and try again later."
+"4","emir@gmail.com","Emir1234!","",""
+

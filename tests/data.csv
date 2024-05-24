@@ -1,6 +1,0 @@
-"firstName","lastName","email","password","passwordConfirmation","errorType","errorTypeMessage"
-,"Kova","eadmi@gmail.com","emir1234","emir1234","firstname-error","This is a required field."
-"JOHN","DOE","EMIR@GMAIL.com","emi","emi","password-error","Minimum length of this field must be equal or greater than 8 symbols. Leading and trailing spaces will be ignored."
-"JOHN","DOE","EMIR@GMAIL.com","emir1234!","emi","password-confirmation-error", "Please enter the same value again."
-
-
