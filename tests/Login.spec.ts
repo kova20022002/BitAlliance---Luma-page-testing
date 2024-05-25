@@ -6,6 +6,7 @@ import { parse } from 'csv-parse/sync';
 import fs from 'fs';
 import path from 'path'
 import { log } from 'console';
+import { afterEach } from 'node:test';
 
 
 const filePath = path.join(__dirname, '../data/loginData.csv');
@@ -19,10 +20,15 @@ const testData = parse(fileContent, {
   relax_quotes: true,
 });
 
+
 test.use({ storageState: { cookies: [], origins: [] } });
 
 for (const data of testData) {
-    test(`Login Test - ${data.testNumber}`, async ({ page }) => {
+    test(`User Login - ${data.testNumber}`, async ({ page, browser }, testInfo) => {
+      afterEach(async () =>{
+        await page.screenshot({path: Date.now() + 'screenshot.png'});
+      })
+    const context = await browser.newContext({ recordVideo: { dir: 'test-results' } });
     const login = new LogIn(page);
   
     const loginData: registrationPageInterface ={
@@ -52,6 +58,11 @@ for (const data of testData) {
       }
     }
 
-
+    await testInfo.attach("", {
+      body: await page.screenshot(),
+      contentType: "image/png"
+    })
+    await context.close();
   })
 };
+

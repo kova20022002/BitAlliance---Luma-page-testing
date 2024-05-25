@@ -5,20 +5,64 @@ import { parse } from 'csv-parse/sync';
 import fs from 'fs';
 import path from 'path';
 import { HomePage } from '../page-objects/HomePage';
+import { checkoutInterface } from '../interfaces/checkout';
+import { afterEach } from 'node:test';
 
-test(`Shopping cart`, async ({ page }) => {
+
+const filePath = path.join(__dirname, '../data/checkoutData.csv');
+const fileContent = fs.readFileSync(filePath, 'utf8');
+
+const testDataArray  = parse(fileContent, {
+  columns: true,
+  skip_empty_lines: true,
+  trim: true,
+  quote: '"',
+  relax_quotes: true,
+});
+
+const testData = testDataArray[0];
+
+test(`Shopping on Website`, async ({ page, browser }, testInfo) => {
+  afterEach(async () =>{
+    await page.screenshot({path: Date.now() + 'screenshot.png'});
+  })
+  const context = await browser.newContext({ recordVideo: { dir: 'test-results' } });
+    const data: checkoutInterface ={
+    street: testData.street,
+    city: testData.city,
+    state: testData.state,
+    zip: testData.zip,
+    country: testData.country,
+    number: testData.number
+    };
+
     const homePage = new HomePage(page);
     await homePage.goto();
     await homePage.itemImage.hover();    
     await homePage.addToCart();
-  //  expect (homePage.addedSuccessfullyBox).toBeVisible(); 
-    await homePage.navigateToCart();
-    const url = page.url();
-    if(url === 'https://magento.softwaretestingboard.com/'){
-        await homePage.clickViewAndEditCart();
+    let shoppingCart = await homePage.navigateToCart();    
+    if(page.url() === 'https://magento.softwaretestingboard.com'){
+      shoppingCart = await homePage.clickViewAndEditCart();
     };
     
-    await homePage.changeQuant('2');
-    await homePage.updateQuantity();
-    await homePage.clickProceedToCheckout();
+    await shoppingCart.changeQuant('2');
+    await shoppingCart.updateQuantity();
+    const checkout = await shoppingCart.clickProceedToCheckout();
+    const isVisible = await checkout.savedInfo.isVisible();
+    if(isVisible){
+      await checkout.chooseShippingMethod();
+      const payment = await checkout.continuePayment();
+      await payment.placeOrder();
+    }else if(!isVisible){
+      await checkout.fillCheckout(data);
+      await checkout.chooseShippingMethod();
+      const payment = await checkout.continuePayment();
+      await payment.placeOrder();
+    }
+
+    await testInfo.attach("", {
+      body: await page.screenshot(),
+      contentType: "image/png"
+    })
+    await context.close();
 });

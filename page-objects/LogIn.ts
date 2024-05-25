@@ -59,8 +59,6 @@ export class LogIn {
         } 
       }
 
-    
-
     async fillLoginForm(loginData: loginPageInterface){
         await this.enterEmail(loginData.email);
         await this.enterPassword(loginData.password);
