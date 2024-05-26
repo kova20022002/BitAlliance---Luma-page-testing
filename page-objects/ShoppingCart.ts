@@ -29,14 +29,10 @@ export class ShoppingCart {
 
     async updateQuantity(){
         await this.updateQuantityButton.click();
-        await this.page.waitForLoadState("domcontentloaded");
     }
 
     async clickProceedToCheckout(): Promise<Checkout>{
-        await this.page.waitForLoadState("domcontentloaded");
-        await this.page.waitForTimeout(4000);
         await this.proceedToCheckoutButton.click();
-        await this.page.waitForTimeout(4000);
         return new Checkout(this.page);
 
     }

@@ -86,7 +86,6 @@ export class AccountPage {
 
     async clickSaveButton(){
         await this.saveButton.click();
-        await this.page.waitForTimeout(3000);
     }
 
     async fillUpdateInfo(updateInfo: updateDataInterface){

@@ -23,13 +23,12 @@ export class HomePage {
         this.addToCartFromHomePage = page.locator('button[class="action tocart primary"][type="submit"]');
         this.itemImage = page.locator('img[class="product-image-photo"][alt="Push It Messenger Bag"][max-width="240"]');
         this.cartButton = page.locator('//html/body/div[2]/header/div[2]/div[1]/a');
-        this.viewAndEditCart = page.locator('a[class="action viewcart"]');
+        this.viewAndEditCart = page.locator('a.action.viewcart[href="https://magento.softwaretestingboard.com/checkout/cart/"]');
   
       }
 
     async goto() {
         await this.page.goto('https://magento.softwaretestingboard.com/');
-        await this.page.waitForTimeout(3000);
 
 
     }
@@ -51,11 +50,10 @@ export class HomePage {
 
     async addToCart(){
         await this.page.locator('li').filter({ hasText: 'Push It Messenger Bag Rating' }).getByRole('button').click();
-        await this.page.waitForLoadState("domcontentloaded");
+
     }
 
     async navigateToCart(): Promise<ShoppingCart>{
-        await this.page.waitForLoadState("domcontentloaded");
         await this.cartButton.click();
         return new ShoppingCart(this.page);
     }

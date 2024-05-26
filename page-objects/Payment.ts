@@ -8,7 +8,7 @@ export class Payment {
 
     constructor(page: Page) {
         this.page = page;
-        this.orderButton = page.locator('button[class="action primary checkout"]');  
+        this.orderButton = page.locator('button[class="action primary checkout"][title="Place Order"]');  
       }
 
     async goto() {

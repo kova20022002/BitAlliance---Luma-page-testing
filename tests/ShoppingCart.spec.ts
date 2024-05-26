@@ -40,25 +40,25 @@ test(`Shopping on Website`, async ({ page, browser }, testInfo) => {
     await homePage.goto();
     await homePage.itemImage.hover();    
     await homePage.addToCart();
-    let shoppingCart = await homePage.navigateToCart();    
-    if(page.url() === 'https://magento.softwaretestingboard.com'){
-      shoppingCart = await homePage.clickViewAndEditCart();
-    };
-    
+
+    await page.waitForLoadState("networkidle");
+
+    await homePage.navigateToCart();   
+
+    const shoppingCart = await homePage.clickViewAndEditCart();
     await shoppingCart.changeQuant('2');
     await shoppingCart.updateQuantity();
+    await page.waitForLoadState("networkidle");
     const checkout = await shoppingCart.clickProceedToCheckout();
-    const isVisible = await checkout.savedInfo.isVisible();
-    if(isVisible){
+        await page.waitForSelector('input[type="radio"][name="ko_unique_1"]');
+
       await checkout.chooseShippingMethod();
       const payment = await checkout.continuePayment();
+      await page.waitForSelector('button[class="action primary checkout"][title="Place Order"]');
+
+      
       await payment.placeOrder();
-    }else if(!isVisible){
-      await checkout.fillCheckout(data);
-      await checkout.chooseShippingMethod();
-      const payment = await checkout.continuePayment();
-      await payment.placeOrder();
-    }
+    
 
     await testInfo.attach("", {
       body: await page.screenshot(),

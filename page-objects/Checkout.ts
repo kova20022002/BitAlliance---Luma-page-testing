@@ -23,7 +23,7 @@ export class Checkout {
         this.country = page.locator('select[name="country_id"][class="select"]');
         this.phoneNumber = page.locator('input[name="telephone"][class="input-text"][aria-required="true"][aria-invalid="false"]');
         this.nextButton = page.locator('//html/body/div[2]/main/div[2]/div/div[2]/div[4]/ol/li[2]/div/div[3]/form/div[3]/div/button');
-        this.savedInfo = page.locator('div[class="shipping-address-item selected-item"]');
+        const savedInfo = page.locator('div.shipping-address-item.selected-item:has-text("emir kovac gsfdsff gsfsdsfd, Alaska 12345-6789 United States 6345442")');
         this.radioInput = page.locator('input[type="radio"][name="ko_unique_1"]');
 
       }
