@@ -47,12 +47,12 @@ export default defineConfig({
       
     },
 
-     {
+     /* {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'],
       storageState: './userAuth.json',
        },
-    },
+    }, */
 
     {
       name: 'webkit',
