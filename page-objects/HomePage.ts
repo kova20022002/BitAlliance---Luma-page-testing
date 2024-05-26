@@ -18,8 +18,8 @@ export class HomePage {
 
     constructor(page: Page) {
         this.page = page;
-        this.dropdown = page.locator('//html/body/div[2]/header/div[1]/div/ul/li[2]/span/button');
-        this.myAccountButton = page.locator('li').filter({hasText: 'My Account'}).nth(0);
+        this.dropdown = page.locator('button[data-action="customer-menu-toggle"] >> visible=true');
+        this.myAccountButton = page.locator('a').filter({hasText: 'My Account'}).nth(0);
         this.addToCartFromHomePage = page.locator('button[class="action tocart primary"][type="submit"]');
         this.itemImage = page.locator('img[class="product-image-photo"][alt="Push It Messenger Bag"][max-width="240"]');
         this.cartButton = page.locator('//html/body/div[2]/header/div[2]/div[1]/a');
@@ -35,7 +35,7 @@ export class HomePage {
     }
 
     async clickDropdown(){
-        await this.dropdown.click({force: true});
+        await this.dropdown.click();
     
     }
 

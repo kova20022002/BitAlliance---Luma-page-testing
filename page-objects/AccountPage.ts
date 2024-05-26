@@ -24,7 +24,7 @@ export class AccountPage {
     constructor(page: Page) {
         this.page = page;
         this.userInfo = page.locator('//html/body/div[2]/main/div[2]/div[1]/div[3]/div[2]/div/div[1]/p');
-        this.editButton = page.locator('a[class="action edit"]').filter({hasText: 'Edit'});
+        this.editButton = page.locator('a[class="action edit"]').filter({hasText: 'Edit'}).nth(0);
         this.editFirstName = page.locator('#firstname and @name="firstname""]');
         this.editLastName = page.locator('#lastname and @name="lastname"')
         this.changeEmailCheckbox = page.locator('#change-email');
@@ -33,9 +33,9 @@ export class AccountPage {
         this.changePassword = page.locator('#current-password' );
         this.changeNewPassword = page.locator('#password and @name="password"');
         this.confirmChangedPassword = page.locator('#password-confirmation and @name="password_confirmation"');
-        this.errorNewPassword = page.locator('//*[@id="password-error"]');
-        this.errorConfirmNewPassword = page.locator('//*[@id="password-confirmation-error"]');
-        this.currentPasswordError = page.locator('div[id="current-password-error"]');
+        this.errorNewPassword = page.locator('#password-error');
+        this.errorConfirmNewPassword = page.locator('#password-confirmation-error');
+        this.currentPasswordError = page.locator('#current-password-error');
         this.saveButton = page.locator('.save');
   
       }
@@ -86,6 +86,7 @@ export class AccountPage {
 
     async clickSaveButton(){
         await this.saveButton.click();
+        await this.page.waitForTimeout(3000);
     }
 
     async fillUpdateInfo(updateInfo: updateDataInterface){
